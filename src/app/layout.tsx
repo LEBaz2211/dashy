@@ -8,7 +8,7 @@ import ClientSessionProvider from "@/components/ClientSessionProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Doxy",
+  title: "Dashy",
   description: "Your Dashboard for life",
 };
 
@@ -24,7 +24,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <main>
             {/* <Navbar></Navbar> */}
             {children}
-            </main>
+          </main>
         </ClientSessionProvider>
       </body>
     </html>

@@ -1,11 +1,9 @@
 import prisma from "@/lib/prisma";
-import Link from "next/link";
-import { Dashboard } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
-import UserProfile from "./UserProfile";
 import DashboardList from "./DashboardList";
 import ConversationList from "./ConversationList";
+import UserMenu from "./UserMenu";
 
 export default async function SidebarNavigation() {
   const session = await getServerSession(authOptions);
@@ -24,7 +22,7 @@ export default async function SidebarNavigation() {
         <DashboardList dashboards={dashboards} />
         <ConversationList />
       </div>
-      <UserProfile user={session?.user} />
+      <UserMenu user={session?.user} />
     </nav>
   );
 }

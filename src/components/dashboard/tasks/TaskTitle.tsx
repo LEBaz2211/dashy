@@ -10,6 +10,7 @@ type Props = {
 
 export default function TaskTitle({ task }: Props) {
   const [title, setTitle] = useState(task.title);
+  const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
 
   const handleTitleChange = async () => {
@@ -19,20 +20,32 @@ export default function TaskTitle({ task }: Props) {
       body: JSON.stringify({ title }),
     });
 
+    setIsEditing(false);
     router.refresh();
   };
 
   return (
-    <input
-      type="text"
-      value={title}
-      onChange={(e) => setTitle(e.target.value)}
-      onBlur={handleTitleChange}
-      onKeyDown={(e) => {
-        if (e.key === "Enter") handleTitleChange();
-      }}
-      className="text-2xl font-bold mb-4 border-b-2 border-blue-500 outline-none p-1"
-      autoFocus
-    />
+    <>
+      {isEditing ? (
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          onBlur={handleTitleChange}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleTitleChange();
+          }}
+          className="text-2xl font-bold mb-4 border-b-2 border-blue-500 outline-none p-1"
+          autoFocus
+        />
+      ) : (
+        <h1
+          className="text-2xl font-bold mb-4 cursor-pointer"
+          onClick={() => setIsEditing(true)}
+        >
+          {title}
+        </h1>
+      )}
+    </>
   );
 }

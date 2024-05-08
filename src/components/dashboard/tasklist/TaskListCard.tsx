@@ -28,6 +28,7 @@ export default function TaskListCard({ taskList }: Props) {
         <EditableTaskListTitle taskList={taskList} />
         <TaskListOptionsMenu taskListId={taskList.id} />
       </div>
+      <AddTaskInline taskListId={taskList.id} />
       {activeTasks.length === 0 ? (
         <p className="text-gray-600">No active tasks available</p>
       ) : (
@@ -39,7 +40,6 @@ export default function TaskListCard({ taskList }: Props) {
           />
         ))
       )}
-      <AddTaskInline taskListId={taskList.id} />
       {completedTasks.length > 0 && (
         <CompletedTaskList tasks={completedTasks} />
       )}
