@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { Dashboard } from "@prisma/client";
-import TaskListCard from "./TaskListCard";
-import AddTaskListButton from "./AddTaskListButton";
+import TaskListCard from "./tasklist/TaskListCard";
+import AddTaskListButton from "./tasklist/AddTaskListButton";
 import EditableTitle from "./EditableTitle";
 import DashboardOptionsMenu from "./DashboardOptionsMenu";
 

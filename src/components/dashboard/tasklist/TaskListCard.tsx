@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import TaskCard from "./TaskCard";
-import AddTaskInline from "./AddTaskInline";
+import TaskCard from "../tasks/TaskCard";
+import AddTaskInline from "../tasks/AddTaskInline";
 import EditableTaskListTitle from "./EditableTaskListTitle";
 import TaskListOptionsMenu from "./TaskListOptionsMenu";
 import CompletedTaskList from "./CompletedTaskList";
-import TaskDetailView from "./TaskDetailView";
+import TaskDetailView from "../tasks/TaskDetailView";
 import { Task, TaskList } from "@prisma/client";
 
 type TaskListWithTasks = TaskList & {
@@ -28,7 +28,6 @@ export default function TaskListCard({ taskList }: Props) {
         <EditableTaskListTitle taskList={taskList} />
         <TaskListOptionsMenu taskListId={taskList.id} />
       </div>
-      <AddTaskInline taskListId={taskList.id} />
       {activeTasks.length === 0 ? (
         <p className="text-gray-600">No active tasks available</p>
       ) : (
@@ -40,6 +39,7 @@ export default function TaskListCard({ taskList }: Props) {
           />
         ))
       )}
+      <AddTaskInline taskListId={taskList.id} />
       {completedTasks.length > 0 && (
         <CompletedTaskList tasks={completedTasks} />
       )}

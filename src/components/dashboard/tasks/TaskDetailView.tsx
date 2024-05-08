@@ -7,6 +7,8 @@ import TagsSection from "./TagsSection";
 import SubtasksSection from "./SubtasksSection";
 import NotesSection from "./NotesSection";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import ConfirmationModal from "../ConfirmationModal";
 
 type Props = {
   task: Task & { tags: Tag[]; subtasks: Subtask[] };
@@ -15,6 +17,7 @@ type Props = {
 
 export default function TaskDetailView({ task, onClose }: Props) {
   const router = useRouter();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleDeleteTask = async () => {
     await fetch(`/api/task/${task.id}`, {
@@ -29,7 +32,11 @@ export default function TaskDetailView({ task, onClose }: Props) {
     <div className="fixed right-0 top-0 bottom-0 w-96 bg-white shadow-lg p-6 z-50 overflow-y-auto">
       <div className="flex justify-between mb-4">
         <TaskTitle task={task} />
-        <button type="button" onClick={onClose} className="text-gray-600 hover:text-gray-800">
+        <button
+          type="button"
+          onClick={onClose}
+          className="text-gray-600 hover:text-gray-800"
+        >
           &times;
         </button>
       </div>
@@ -48,11 +55,19 @@ export default function TaskDetailView({ task, onClose }: Props) {
         </span>
         <button
           type="button"
-          onClick={handleDeleteTask}
+          onClick={() => {
+            setIsModalOpen(true);
+          }}
           className="text-red-500 hover:text-red-700"
         >
           &#x1F5D1;
         </button>
+        <ConfirmationModal
+          isOpen={isModalOpen}
+          onConfirm={handleDeleteTask}
+          onCancel={() => setIsModalOpen(false)}
+          message="Are you sure you want to delete this task?"
+        />
       </div>
     </div>
   );

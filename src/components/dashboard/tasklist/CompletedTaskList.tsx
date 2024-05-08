@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Task } from "@prisma/client";
-import TaskCard from "./TaskCard";
+import TaskCard from "../tasks/TaskCard";
 
 type Props = {
   tasks: Task[];
