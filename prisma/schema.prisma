@@ -1,0 +1,75 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id          String     @id @default(cuid())
+  name        String?
+  email       String     @unique
+  password    String?
+  image       String?
+  emailVerified DateTime?
+  dashboards  Dashboard[]
+  accounts    Account[]
+  sessions    Session[]
+}
+
+model Dashboard {
+  id         Int       @id @default(autoincrement())
+  title      String
+  userId     String
+  user       User      @relation(fields: [userId], references: [id])
+  taskLists  TaskList[]
+}
+
+model TaskList {
+  id         Int       @id @default(autoincrement())
+  title      String
+  dashboardId Int
+  dashboard  Dashboard @relation(fields: [dashboardId], references: [id])
+  tasks      Task[]
+}
+
+model Task {
+  id         Int       @id @default(autoincrement())
+  title      String
+  completed  Boolean   @default(false)
+  taskListId Int
+  taskList   TaskList  @relation(fields: [taskListId], references: [id])
+}
+
+model Account {
+  id                 String   @id @default(cuid())
+  userId             String
+  user               User     @relation(fields: [userId], references: [id])
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  expires      DateTime
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  @@id([identifier, token])
+}
