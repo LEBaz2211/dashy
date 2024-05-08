@@ -16,3 +16,13 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
   return NextResponse.json(updatedTaskList);
 }
+
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+  const taskListId = parseInt(params.id, 10);
+
+  await prisma.taskList.delete({
+    where: { id: taskListId },
+  });
+
+  return NextResponse.json({ message: "Task List deleted" });
+}

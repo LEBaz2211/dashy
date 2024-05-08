@@ -5,22 +5,21 @@ import ConfirmationModal from "./ConfirmationModal";
 import { useRouter } from "next/navigation";
 
 type Props = {
-  dashboardId: number;
+  taskListId: number;
 };
 
-export default function DashboardOptionsMenu({ dashboardId }: Props) {
+export default function TaskListOptionsMenu({ taskListId }: Props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  const handleDeleteDashboard = async () => {
-    await fetch(`/api/dashboard/${dashboardId}`, {
+  const handleDeleteTaskList = async () => {
+    await fetch(`/api/task-list/${taskListId}`, {
       method: "DELETE",
     });
 
     setIsModalOpen(false);
-    router.push("/dashboard");
     router.refresh();
   };
 
@@ -42,11 +41,9 @@ export default function DashboardOptionsMenu({ dashboardId }: Props) {
         onClick={() => setIsMenuOpen(!isMenuOpen)}
         className="flex flex-row items-center justify-center gap-1 p-2"
       >
-        <div className="flex space-x-1">
-          <div className="w-1.5 h-1.5 bg-gray-900 rounded-full" />
-          <div className="w-1.5 h-1.5 bg-gray-900 rounded-full" />
-          <div className="w-1.5 h-1.5 bg-gray-900 rounded-full" />
-        </div>
+        <div className="w-1.5 h-1.5 bg-gray-900 rounded-full" />
+        <div className="w-1.5 h-1.5 bg-gray-900 rounded-full" />
+        <div className="w-1.5 h-1.5 bg-gray-900 rounded-full" />
       </button>
 
       {isMenuOpen && (
@@ -65,9 +62,9 @@ export default function DashboardOptionsMenu({ dashboardId }: Props) {
 
       <ConfirmationModal
         isOpen={isModalOpen}
-        onConfirm={handleDeleteDashboard}
+        onConfirm={handleDeleteTaskList}
         onCancel={() => setIsModalOpen(false)}
-        message="Are you sure you want to delete this dashboard?"
+        message="Are you sure you want to delete this task list?"
       />
     </div>
   );
