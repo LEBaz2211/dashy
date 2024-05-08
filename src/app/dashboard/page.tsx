@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import DashboardNavigation from "@/components/dashboard/DashboardNavigation";
+import SidebarNavigation from "@/components/sidebar/SidebarNavigation";
 
 const fetchDashboards = async () => {
   return await prisma.dashboard.findMany({
@@ -13,9 +13,11 @@ export default async function DashboardPage() {
   const dashboards = await fetchDashboards();
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Dashboards</h1>
-      <DashboardNavigation dashboards={dashboards} />
+    <div className="flex h-screen">
+      <SidebarNavigation />
+      <main className="flex-1 p-8 overflow-y-auto">
+        <p className="italic">Click on a dashboard</p>
+      </main>
     </div>
   );
 }

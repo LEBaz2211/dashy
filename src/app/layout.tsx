@@ -21,8 +21,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body>
         <ClientSessionProvider>
-          <Navbar />
-          <main className="container">{children}</main>
+          <main>{children}</main>
         </ClientSessionProvider>
       </body>
     </html>

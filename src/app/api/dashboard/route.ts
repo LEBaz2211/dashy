@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(dashboard);
   } catch (error) {
+    console.error("Error creating dashboard:", error);
     return NextResponse.json({ error: "Unable to create dashboard" }, { status: 500 });
   }
 }
