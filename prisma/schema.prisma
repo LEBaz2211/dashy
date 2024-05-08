@@ -36,11 +36,32 @@ model TaskList {
 }
 
 model Task {
-  id         Int       @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   title      String
-  completed  Boolean   @default(false)
+  completed  Boolean  @default(false)
   taskListId Int
-  taskList   TaskList  @relation(fields: [taskListId], references: [id])
+  taskList   TaskList @relation(fields: [taskListId], references: [id])
+  dueDate    DateTime?
+  reminder   DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  tags       Tag[]
+  subtasks   Subtask[]
+  notes      String?
+}
+
+model Subtask {
+  id         Int      @id @default(autoincrement())
+  title      String
+  completed  Boolean  @default(false)
+  taskId     Int
+  task       Task     @relation(fields: [taskId], references: [id])
+}
+
+model Tag {
+  id    Int    @id @default(autoincrement())
+  name  String
+  tasks Task[]
 }
 
 model Account {

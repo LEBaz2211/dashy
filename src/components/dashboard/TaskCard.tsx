@@ -6,9 +6,10 @@ import { useRouter } from "next/navigation";
 
 type Props = {
   task: Task;
+  onClick?: () => void;
 };
 
-export default function TaskCard({ task }: Props) {
+export default function TaskCard({ task, onClick }: Props) {
   const [completed, setCompleted] = useState(task.completed);
   const router = useRouter();
 
@@ -27,18 +28,17 @@ export default function TaskCard({ task }: Props) {
 
   return (
     <div
-      className={`bg-white shadow-md rounded p-4 flex items-center mb-2 cursor-pointer ${
-        completed ? "line-through text-gray-500" : ""
-      }`}
-      onClick={handleTaskCompletion}
+      className={`bg-white shadow-md rounded p-4 mb-2 flex items-center ${completed ? "line-through text-gray-500" : ""}`}
     >
       <input
         type="checkbox"
         checked={completed}
-        onChange={() => {}}
+        onChange={handleTaskCompletion}
         className="mr-2"
       />
-      <span>{task.title}</span>
+      <span className="cursor-pointer flex-1" onClick={onClick}>
+        {task.title}
+      </span>
     </div>
   );
 }
