@@ -8,7 +8,7 @@ export default async function LoginPage() {
   return (
     <div className="flex flex-col items-center justify-center h-screen gap-8">
       <LoginForm />
-      <OAuthButtons providers={providers} />
+      {/* <OAuthButtons providers={providers} /> */}
     </div>
   );
 }

@@ -20,7 +20,7 @@ type Props = {
 export default function TaskListCard({ taskList }: Props) {
   const activeTasks = taskList.tasks.filter((task) => !task.completed);
   const completedTasks = taskList.tasks.filter((task) => task.completed);
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
 
   return (
     <div className="relative bg-white p-4 shadow-md rounded mb-4 flex flex-col">
@@ -30,23 +30,23 @@ export default function TaskListCard({ taskList }: Props) {
       </div>
       <AddTaskInline taskListId={taskList.id} />
       {activeTasks.length === 0 ? (
-        <p className="text-gray-600">No active tasks available</p>
+        <p classname="text-gray-600">No active tasks available</p>
       ) : (
         activeTasks.map((task) => (
           <TaskCard
             key={task.id}
             task={task}
-            onClick={() => setSelectedTask(task)}
+            onClick={() => setSelectedTaskId(task.id)}
           />
         ))
       )}
       {completedTasks.length > 0 && (
         <CompletedTaskList tasks={completedTasks} />
       )}
-      {selectedTask && (
+      {selectedTaskId && (
         <TaskDetailView
-          task={selectedTask}
-          onClose={() => setSelectedTask(null)}
+          taskId={selectedTaskId}
+          onClose={() => setSelectedTaskId(null)}
         />
       )}
     </div>

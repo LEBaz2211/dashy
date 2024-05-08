@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Task, Subtask, Tag } from "@prisma/client";
 import TaskTitle from "./TaskTitle";
 import DueDateReminder from "./DueDateReminder";
@@ -7,26 +8,51 @@ import TagsSection from "./TagsSection";
 import SubtasksSection from "./SubtasksSection";
 import NotesSection from "./NotesSection";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import ConfirmationModal from "../ConfirmationModal";
 
 type Props = {
-  task: Task & { tags: Tag[]; subtasks: Subtask[] };
+  taskId: number;
+  initialTask?: Task & { tags: Tag[]; subtasks: Subtask[] };
   onClose: () => void;
 };
 
-export default function TaskDetailView({ task, onClose }: Props) {
+export default function TaskDetailView({
+  taskId,
+  initialTask,
+  onClose,
+}: Props) {
+  const [task, setTask] = useState<
+    (Task & { tags: Tag[]; subtasks: Subtask[] }) | null
+  >(initialTask || null);
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  useEffect(() => {
+    if (!initialTask) {
+      const fetchTask = async () => {
+        const response = await fetch(`/api/task/${taskId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setTask(data);
+        }
+      };
+
+      fetchTask();
+    }
+  }, [taskId, initialTask]);
+
   const handleDeleteTask = async () => {
-    await fetch(`/api/task/${task.id}`, {
+    await fetch(`/api/task/${taskId}`, {
       method: "DELETE",
     });
 
     onClose();
     router.refresh();
   };
+
+  if (!task) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="fixed right-0 top-0 bottom-0 w-96 bg-white shadow-lg p-6 z-50 overflow-y-auto">
@@ -55,9 +81,7 @@ export default function TaskDetailView({ task, onClose }: Props) {
         </span>
         <button
           type="button"
-          onClick={() => {
-            setIsModalOpen(true);
-          }}
+          onClick={handleDeleteTask}
           className="text-red-500 hover:text-red-700"
         >
           &#x1F5D1;
