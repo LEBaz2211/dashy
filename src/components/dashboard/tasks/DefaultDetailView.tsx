@@ -1,29 +1,76 @@
 "use client";
 
 import { Task, Subtask, Tag } from "@prisma/client";
+import { AITask } from "@prisma/ai_client";
 import TaskTitle from "./TaskTitle";
 import DueDateReminder from "./DueDateReminder";
 import TagsSection from "./TagsSection";
 import SubtasksSection from "./SubtasksSection";
 import NotesSection from "./NotesSection";
 import ConfirmationModal from "../ConfirmationModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Props = {
   task: Task & { tags: Tag[]; subtasks: Subtask[] };
   onClose: () => void;
+  refreshTaskData: () => void;
 };
 
-export default function DefaultDetailView({ task, onClose }: Props) {
+export default function DefaultDetailView({
+  task,
+  onClose,
+  refreshTaskData,
+}: Props) {
+  const [aiTasks, setAiTasks] = useState<AITask[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [loadingAiTasks, setLoadingAiTasks] = useState(false);
 
-  const handleDeleteTask = async () => {
-    await fetch(`/api/task/${task.id}`, {
-      method: "DELETE",
-    });
+  useEffect(() => {
+    const fetchAiTasks = async () => {
+      try {
+        const response = await fetch(`/api/ai_tasks/${task.id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setAiTasks(data);
+        } else {
+          console.error("Failed to fetch AI tasks");
+        }
+      } catch (err) {
+        console.error("Error fetching AI tasks:", err);
+      }
+    };
 
-    onClose();
-    window.location.reload();
+    fetchAiTasks();
+  }, [task.id]);
+
+  const handleGenerateTags = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("http://localhost:8000/auto_tag/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tasks: [task.id],
+          user_id: "clvxvtq980000gq25tm6p2g64",
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to auto-tag task");
+      }
+
+      refreshTaskData();
+      setSuccessMessage("Tags generated successfully!");
+    } catch (err) {
+      console.error("Failed to generate tags:", err);
+      setSuccessMessage("Failed to generate tags");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -40,12 +87,35 @@ export default function DefaultDetailView({ task, onClose }: Props) {
       </div>
 
       <DueDateReminder task={task} />
-
       <SubtasksSection task={task} />
-
       <TagsSection task={task} />
-
       <NotesSection task={task} />
+
+      <div className="flex items-center justify-between mt-4">
+        <button
+          type="button"
+          onClick={handleGenerateTags}
+          disabled={isLoading}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          {isLoading ? "Generating..." : "Generate Tags"}
+        </button>
+        {successMessage && <p className="text-green-500">{successMessage}</p>}
+      </div>
+      <div>
+        <h4>AI Tasks</h4>
+        {loadingAiTasks ? (
+          <p>Loading AI tasks...</p>
+        ) : (
+          aiTasks.map((aiTask) => (
+            <div key={aiTask.id}>
+              <p>Type: {aiTask.task_type}</p>
+              <p>Output: {aiTask.ai_output}</p>
+              <p>Created: {new Date(aiTask.created_at).toLocaleDateString()}</p>
+            </div>
+          ))
+        )}
+      </div>
 
       <div className="flex justify-between items-center mt-8">
         <span className="text-sm text-gray-500">
@@ -60,7 +130,7 @@ export default function DefaultDetailView({ task, onClose }: Props) {
         </button>
         <ConfirmationModal
           isOpen={isModalOpen}
-          onConfirm={handleDeleteTask}
+          onConfirm={() => {}}
           onCancel={() => setIsModalOpen(false)}
           message="Are you sure you want to delete this task?"
         />

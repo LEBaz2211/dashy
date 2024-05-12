@@ -1,11 +1,11 @@
 datasource ai_db {
-  provider = "postgresql"  // Assuming you are using PostgreSQL
-  url      = env("AI_DATABASE_URL")  // Connection string for the AI database
+  provider = "mysql"
+  url      = env("AI_DATABASE_URL")
 }
 
 generator client {
   provider = "prisma-client-js"
-  output   = "./node_modules/@prisma/ai_client"
+  output   = "../node_modules/@prisma/ai_client"
 }
 
 enum KnowledgeType {
@@ -31,14 +31,15 @@ enum TaskType {
 }
 
 model AITask {
-  id             Int           @id @default(autoincrement())
-  task_type      TaskType      @default(general_assistance)
-  related_task_id String?      // Foreign key to task table if applicable
-  user_id        String
-  ai_output      String
-  created_at     DateTime      @default(now())
-  feedback       Feedback[]
+  id               Int       @id @default(autoincrement())
+  task_type        TaskType  @default(general_assistance)
+  related_task_id String
+  user_id          String
+  ai_output        String
+  created_at       DateTime  @default(now())
+  feedback         Feedback[]
 }
+
 
 model UserKnowledge {
   id          Int            @id @default(autoincrement())

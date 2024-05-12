@@ -16,7 +16,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
-        <title>Task App</title>
+        <title>Dashy</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
       <body>
