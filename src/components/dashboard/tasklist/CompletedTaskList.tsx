@@ -21,10 +21,8 @@ export default function CompletedTaskList({ tasks }: Props) {
         className="cursor-pointer flex items-center mb-2"
         onClick={toggleCollapse}
       >
-        <span className={`mr-2 transform ${isCollapsed ? "" : "rotate-90"}`}>
-          &#x25B6;
-        </span>
         <h3 className="text-lg font-bold">Completed</h3>
+        <span className="text-gray-500 ml-2">{isCollapsed ? "▲" : "▼"}</span>
       </div>
       {!isCollapsed &&
         tasks.map((task) => <TaskCard key={task.id} task={task} />)}

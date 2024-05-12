@@ -7,6 +7,7 @@ import DueDateReminder from "./DueDateReminder";
 import TagsSection from "./TagsSection";
 import SubtasksSection from "./SubtasksSection";
 import NotesSection from "./NotesSection";
+import AITaskItem from "./AITaskItem";
 import ConfirmationModal from "../ConfirmationModal";
 import { useEffect, useState } from "react";
 
@@ -102,17 +103,17 @@ export default function DefaultDetailView({
         </button>
         {successMessage && <p className="text-green-500">{successMessage}</p>}
       </div>
-      <div>
-        <h4>AI Tasks</h4>
+      <div className="mt-4">
+        <h4 className="font-bold text-lg mb-2">AI Tasks</h4>
         {loadingAiTasks ? (
           <p>Loading AI tasks...</p>
         ) : (
           aiTasks.map((aiTask) => (
-            <div key={aiTask.id}>
-              <p>Type: {aiTask.task_type}</p>
-              <p>Output: {aiTask.ai_output}</p>
-              <p>Created: {new Date(aiTask.created_at).toLocaleDateString()}</p>
-            </div>
+            <AITaskItem
+              key={aiTask.id}
+              aiTask={aiTask}
+              userId="clvxvtq980000gq25tm6p2g64"
+            />
           ))
         )}
       </div>
