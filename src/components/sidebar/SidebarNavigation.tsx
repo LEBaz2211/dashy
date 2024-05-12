@@ -20,7 +20,7 @@ export default async function SidebarNavigation() {
       <div>
         <h1 className="text-2xl font-bold mb-4">Dashy</h1>
         <DashboardList dashboards={dashboards} />
-        <ConversationList />
+        {/* <ConversationList /> */}
       </div>
       <UserMenu user={session?.user} />
     </nav>

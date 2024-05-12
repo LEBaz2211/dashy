@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Task } from "@prisma/client";
 import { useRouter } from "next/navigation";
+import TaskOptionsMenu from "./TaskOptionsMenu";
 
 type Props = {
   task: Task;
@@ -11,6 +12,7 @@ type Props = {
 
 export default function TaskCard({ task, onClick }: Props) {
   const [completed, setCompleted] = useState(task.completed);
+  const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
 
   const handleTaskCompletion = async () => {
@@ -28,17 +30,25 @@ export default function TaskCard({ task, onClick }: Props) {
 
   return (
     <div
-      className={`bg-white shadow-md rounded p-4 mb-2 flex items-center ${completed ? "line-through text-gray-500" : ""}`}
+      className={`bg-white shadow-md rounded p-4 mb-2 flex items-center justify-between ${
+        completed ? "line-through text-gray-500" : ""
+      }`}
     >
-      <input
-        type="checkbox"
-        checked={completed}
-        onChange={handleTaskCompletion}
-        className="mr-2"
+      <div className="flex items-center cursor-pointer" onClick={onClick}>
+        <input
+          type="checkbox"
+          checked={completed}
+          onChange={handleTaskCompletion}
+          className="mr-2"
+        />
+        <span>{task.title}</span>
+      </div>
+      <TaskOptionsMenu
+        taskId={task.id}
+        currentType={task.type}
+        isOpen={menuOpen}
+        setIsOpen={setMenuOpen}
       />
-      <span className="cursor-pointer flex-1" onClick={onClick}>
-        {task.title}
-      </span>
     </div>
   );
 }
