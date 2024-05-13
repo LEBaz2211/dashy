@@ -24,18 +24,16 @@ export default function TaskDetailView({
   const router = useRouter();
 
   useEffect(() => {
-    if (!initialTask) {
-      const fetchTask = async () => {
-        const response = await fetch(`/api/task/${taskId}`);
-        if (response.ok) {
-          const data = await response.json();
-          setTask(data);
-        }
-      };
+    fetchTask();
+  }, [taskId]);
 
-      fetchTask();
+  const fetchTask = async () => {
+    const response = await fetch(`/api/task/${taskId}`);
+    if (response.ok) {
+      const data = await response.json();
+      setTask(data);
     }
-  }, [taskId, initialTask]);
+  };
 
   const handleDeleteTask = async () => {
     await fetch(`/api/task/${taskId}`, {
@@ -43,7 +41,7 @@ export default function TaskDetailView({
     });
 
     onClose();
-    router.refresh();
+    router.push("/dashboard"); // Redirect or refresh after delete
   };
 
   if (!task) {
