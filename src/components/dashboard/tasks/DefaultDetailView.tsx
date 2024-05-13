@@ -23,13 +23,13 @@ export default function DefaultDetailView({
   refreshTaskData,
 }: Props) {
   const [aiTasks, setAiTasks] = useState<AITask[]>([]);
+  const [loadingAiTasks, setLoadingAiTasks] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-  const [loadingAiTasks, setLoadingAiTasks] = useState(false);
 
   useEffect(() => {
     const fetchAiTasks = async () => {
+      setLoadingAiTasks(true);
       try {
         const response = await fetch(`/api/ai_tasks/${task.id}`);
         if (response.ok) {
@@ -40,39 +40,13 @@ export default function DefaultDetailView({
         }
       } catch (err) {
         console.error("Error fetching AI tasks:", err);
+      } finally {
+        setLoadingAiTasks(false);
       }
     };
 
     fetchAiTasks();
   }, [task.id]);
-
-  const handleGenerateTags = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch("http://localhost:8000/auto_tag/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          tasks: [task.id],
-          user_id: "clvxvtq980000gq25tm6p2g64",
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to auto-tag task");
-      }
-
-      refreshTaskData();
-      setSuccessMessage("Tags generated successfully!");
-    } catch (err) {
-      console.error("Failed to generate tags:", err);
-      setSuccessMessage("Failed to generate tags");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <>
@@ -81,6 +55,7 @@ export default function DefaultDetailView({
         <button
           type="button"
           onClick={onClose}
+          aria-label="Close task view"
           className="text-gray-600 hover:text-gray-800"
         >
           &times;
@@ -89,33 +64,22 @@ export default function DefaultDetailView({
 
       <DueDateReminder task={task} />
       <SubtasksSection task={task} />
-      <TagsSection task={task} />
+      <TagsSection
+        task={task}
+        onGenerateTags={() => setIsLoading(true)}
+        isLoading={isLoading}
+      />
       <NotesSection task={task} />
 
-      <div className="flex items-center justify-between mt-4">
-        <button
-          type="button"
-          onClick={handleGenerateTags}
-          disabled={isLoading}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          {isLoading ? "Generating..." : "Generate Tags"}
-        </button>
-        {successMessage && <p className="text-green-500">{successMessage}</p>}
-      </div>
       <div className="mt-4">
         <h4 className="font-bold text-lg mb-2">AI Tasks</h4>
-        {loadingAiTasks ? (
-          <p>Loading AI tasks...</p>
-        ) : (
-          aiTasks.map((aiTask) => (
-            <AITaskItem
-              key={aiTask.id}
-              aiTask={aiTask}
-              userId="clvxvtq980000gq25tm6p2g64"
-            />
-          ))
-        )}
+        {aiTasks.map((aiTask) => (
+          <AITaskItem
+            key={aiTask.id}
+            aiTask={aiTask}
+            userId="clvxvtq980000gq25tm6p2g64"
+          />
+        ))}
       </div>
 
       <div className="flex justify-between items-center mt-8">
@@ -125,6 +89,7 @@ export default function DefaultDetailView({
         <button
           type="button"
           onClick={() => setIsModalOpen(true)}
+          aria-label="Delete task"
           className="text-red-500 hover:text-red-700"
         >
           &#x1F5D1;
