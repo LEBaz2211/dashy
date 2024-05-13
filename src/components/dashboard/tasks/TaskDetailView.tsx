@@ -45,7 +45,11 @@ export default function TaskDetailView({
   };
 
   if (!task) {
-    return <div>Loading...</div>;
+    return (
+      <div className="fixed right-0 top-0 bottom-0 w-96 bg-white shadow-lg p-6 z-50 overflow-y-auto">
+        Loading...
+      </div>
+    );
   }
 
   let DetailViewComponent;

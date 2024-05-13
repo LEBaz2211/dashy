@@ -6,23 +6,17 @@ import { useState } from "react";
 
 type Props = {
   task: Task & { tags: Tag[] };
-  onGenerateTags: () => void;
-  isLoading: boolean;
 };
 
-export default function TagsSection({
-  task,
-  onGenerateTags,
-  isLoading,
-}: Props) {
+export default function TagsSection({ task }: Props) {
   const [tags, setTags] = useState<Tag[]>(task.tags || []);
   const [newTag, setNewTag] = useState("");
   const [addingTag, setAddingTag] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleGenerateTags = async () => {
-    await onGenerateTags();
-    // Call the tagging API and refresh task data
+    setIsLoading(true);
     try {
       const response = await fetch("http://localhost:8000/auto_tag/", {
         method: "POST",
@@ -33,14 +27,17 @@ export default function TagsSection({
         }),
       });
       if (response.ok) {
-        router.refresh();
+        const newTags = await fetch(`/api/task/${task.id}/tags`).then((res) =>
+          res.json()
+        );
+        setTags(newTags);
       } else {
         throw new Error("Failed to auto-tag task");
       }
     } catch (error) {
       console.error("Auto-tagging failed:", error);
     } finally {
-      onGenerateTags(); // Reset loading state
+      setIsLoading(false);
     }
 
     router.refresh();

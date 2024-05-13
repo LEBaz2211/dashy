@@ -48,6 +48,10 @@ export default function SubtasksSection({ task }: Props) {
         }),
       });
       if (response.ok) {
+        const newSubtasks = await fetch(`/api/task/${task.id}/subtasks`).then(
+          (res) => res.json()
+        );
+        setSubtasks(newSubtasks);
       } else {
         throw new Error("Failed to generate subtasks");
       }
