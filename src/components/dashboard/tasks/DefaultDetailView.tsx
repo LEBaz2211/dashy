@@ -14,9 +14,14 @@ import { useEffect, useState } from "react";
 type Props = {
   task: Task & { tags: Tag[]; subtasks: Subtask[] };
   onClose: () => void;
+  handleDeleteTask: () => void;
 };
 
-export default function DefaultDetailView({ task, onClose }: Props) {
+export default function DefaultDetailView({
+  task,
+  onClose,
+  handleDeleteTask,
+}: Props) {
   const [aiTasks, setAiTasks] = useState<AITask[]>([]);
   const [loadingAiTasks, setLoadingAiTasks] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -87,7 +92,10 @@ export default function DefaultDetailView({ task, onClose }: Props) {
         </button>
         <ConfirmationModal
           isOpen={isModalOpen}
-          onConfirm={() => {}}
+          onConfirm={() => {
+            handleDeleteTask();
+            setIsModalOpen(false);
+          }}
           onCancel={() => setIsModalOpen(false)}
           message="Are you sure you want to delete this task?"
         />

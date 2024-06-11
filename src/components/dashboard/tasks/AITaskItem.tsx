@@ -50,11 +50,11 @@ export default function AITaskItem({ aiTask, userId }: AITaskItemProps) {
   };
 
   return (
-    <div
-      className="bg-gray-100 p-4 rounded-lg shadow mb-2 cursor-pointer"
-      onClick={() => setExpanded(!expanded)}
-    >
-      <div className="flex justify-between items-center">
+    <div className="bg-gray-100 p-4 rounded-lg shadow mb-2 cursor-pointer">
+      <div
+        className="flex justify-between items-center"
+        onClick={() => setExpanded(!expanded)}
+      >
         <p>Created: {new Date(aiTask.created_at).toLocaleDateString()}</p>
         <span className="text-gray-500">{expanded ? "▲" : "▼"}</span>
       </div>

@@ -41,7 +41,7 @@ export default function TaskDetailView({
     });
 
     onClose();
-    router.push("/dashboard"); // Redirect or refresh after delete
+    router.refresh();
   };
 
   if (!task) {
