@@ -1,12 +1,11 @@
+"use client";
+
 import React, { useState } from "react";
+import { submitFeedback } from "@/lib/api";
+import { AITask } from "@/lib/api/types";
 
 type AITaskItemProps = {
-  aiTask: {
-    id: number;
-    task_type: string;
-    ai_output: string;
-    created_at: Date;
-  };
+  aiTask: AITask;
   userId: string;
 };
 
@@ -20,24 +19,7 @@ export default function AITaskItem({ aiTask, userId }: AITaskItemProps) {
   const handleFeedbackSubmit = async () => {
     setSubmitting(true);
     try {
-      const response = await fetch("http://127.0.0.1:8000/feedback/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          task_type: aiTask.task_type,
-          ai_task_id: aiTask.id,
-          user_id: userId,
-          feedback,
-          rating,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to auto-tag task");
-      }
-
+      await submitFeedback(aiTask, userId, feedback, rating);
       setMessage("Feedback submitted successfully");
       setFeedback("");
       setRating(0);

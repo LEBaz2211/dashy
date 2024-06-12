@@ -3,6 +3,7 @@
 import { Task, Tag } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { generateTags } from "@/lib/api";
 
 type Props = {
   task: Task & { tags: Tag[] };
@@ -18,22 +19,8 @@ export default function TagsSection({ task }: Props) {
   const handleGenerateTags = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:8000/auto_tag/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tasks: [task.id],
-          user_id: "clvxvtq980000gq25tm6p2g64",
-        }),
-      });
-      if (response.ok) {
-        const newTags = await fetch(`/api/task/${task.id}/tags`).then((res) =>
-          res.json()
-        );
-        setTags(newTags);
-      } else {
-        throw new Error("Failed to auto-tag task");
-      }
+      const newTags = await generateTags(task.id, "clvxvtq980000gq25tm6p2g64");
+      setTags(newTags);
     } catch (error) {
       console.error("Auto-tagging failed:", error);
     } finally {

@@ -1,8 +1,9 @@
 "use client";
 
 import { Task, Subtask } from "@prisma/client";
-import { use, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { generateSubtasks } from "@/lib/api";
 
 type Props = {
   task: Task & { subtasks: Subtask[] };
@@ -37,24 +38,11 @@ export default function SubtasksSection({ task }: Props) {
   const handleGenerateSubtasks = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`http://localhost:8000/auto_subtask/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          tasks: [task.id],
-          user_id: "clvxvtq980000gq25tm6p2g64",
-        }),
-      });
-      if (response.ok) {
-        const newSubtasks = await fetch(`/api/task/${task.id}/subtasks`).then(
-          (res) => res.json()
-        );
-        setSubtasks(newSubtasks);
-      } else {
-        throw new Error("Failed to generate subtasks");
-      }
+      const newSubtasks = await generateSubtasks(
+        task.id,
+        "clvxvtq980000gq25tm6p2g64"
+      );
+      setSubtasks(newSubtasks);
     } catch (error) {
       console.error("Error generating subtasks:", error);
     } finally {

@@ -2,11 +2,8 @@
 
 import React, { useState } from "react";
 import { ConversationHistory } from "./ConversationHistory";
-
-type Message = {
-  role: "user" | "assistant" | "system";
-  content: string;
-};
+import { startConversation, continueConversation } from "@/lib/api";
+import { Message } from "@/lib/api/types";
 
 type Props = {
   userId: string;
@@ -19,36 +16,25 @@ export default function Chatbot({ userId }: Props) {
   const [showHistory, setShowHistory] = useState(false);
 
   const handleStartConversation = async () => {
-    const response = await fetch("http://127.0.0.1:8000/start_conversation/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        user_id: userId,
-        conversation: [{ role: "user", content: userInput }],
-      }),
-    });
-    const data = await response.json();
-    setConversation(data.conversation);
-    setConversationId(data.id);
-    setUserInput("");
+    try {
+      const data = await startConversation(userId, userInput);
+      setConversation(data.conversation);
+      setConversationId(data.id);
+      setUserInput("");
+    } catch (error) {
+      console.error("Failed to start conversation:", error);
+    }
   };
 
   const handleContinueConversation = async () => {
     if (!conversationId) return;
-    const response = await fetch(
-      "http://127.0.0.1:8000/continue_conversation/",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          conversation_id: conversationId,
-          user_message: userInput,
-        }),
-      }
-    );
-    const data = await response.json();
-    setConversation(data.conversation);
-    setUserInput("");
+    try {
+      const data = await continueConversation(conversationId, userInput);
+      setConversation(data.conversation);
+      setUserInput("");
+    } catch (error) {
+      console.error("Failed to continue conversation:", error);
+    }
   };
 
   const sendMessage = () => {
