@@ -8,7 +8,7 @@ import Image from "next/image";
 
 type Props = {
   dashboards: Dashboard[];
-  user: any; // Adjust this type according to your user type definition
+  user: any;
 };
 
 export default function SidebarClientSide({ dashboards, user }: Props) {
@@ -59,7 +59,7 @@ export default function SidebarClientSide({ dashboards, user }: Props) {
       </button>
       <nav
         className={`bg-gray-100 shadow-md p-4 h-screen sticky top-0 flex flex-col justify-between transition-transform duration-300 ${
-          isOpen ? "w-64" : "w-0 overflow-hidden"
+          isOpen ? "w-60" : "w-20 overflow-hidden"
         }`}
       >
         {isOpen && (
