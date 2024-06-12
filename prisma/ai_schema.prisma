@@ -1,0 +1,78 @@
+datasource ai_db {
+  provider = "mysql"
+  url      = env("AI_DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/@prisma/ai_client"
+}
+
+enum KnowledgeType {
+  project
+  object
+  course
+  preference
+  other
+}
+
+enum PromptType {
+  auto_tag
+  auto_subtask
+  auto_ranking
+  general
+}
+
+enum TaskType {
+  auto_subtask
+  auto_tag
+  auto_ranking
+  general_assistance
+}
+
+model AITask {
+  id               Int       @id @default(autoincrement())
+  task_type        TaskType  @default(general_assistance)
+  related_task_id String
+  user_id          String
+  ai_output        String
+  created_at       DateTime  @default(now())
+  feedback         Feedback[]
+}
+
+
+model UserKnowledge {
+  id          Int            @id @default(autoincrement())
+  user_id     String
+  type        KnowledgeType
+  content     String
+  created_at  DateTime       @default(now())
+  updated_at  DateTime       @default(now()) @updatedAt
+}
+
+model Conversation {
+  id           Int            @id @default(autoincrement())
+  user_id      String
+  conversation Json
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @default(now()) @updatedAt
+}
+
+model Feedback {
+  id           Int            @id @default(autoincrement())
+  task_type    String
+  ai_task_id   Int?
+  user_id      String
+  feedback     String
+  rating       Int?           // Optional rating (1-5)
+  timestamp    DateTime       @default(now())
+  ai_task      AITask?        @relation(fields: [ai_task_id], references: [id])
+}
+
+model PersonalizedPrompt {
+  id        Int           @id @default(autoincrement())
+  user_id   String
+  prompt    String
+  type      PromptType
+  timestamp DateTime      @default(now())
+}

@@ -24,18 +24,16 @@ export default function TaskDetailView({
   const router = useRouter();
 
   useEffect(() => {
-    if (!initialTask) {
-      const fetchTask = async () => {
-        const response = await fetch(`/api/task/${taskId}`);
-        if (response.ok) {
-          const data = await response.json();
-          setTask(data);
-        }
-      };
+    fetchTask();
+  }, [taskId]);
 
-      fetchTask();
+  const fetchTask = async () => {
+    const response = await fetch(`/api/task/${taskId}`);
+    if (response.ok) {
+      const data = await response.json();
+      setTask(data);
     }
-  }, [taskId, initialTask]);
+  };
 
   const handleDeleteTask = async () => {
     await fetch(`/api/task/${taskId}`, {
@@ -47,7 +45,11 @@ export default function TaskDetailView({
   };
 
   if (!task) {
-    return <div>Loading...</div>;
+    return (
+      <div className="fixed right-0 top-0 bottom-0 w-96 bg-white shadow-lg p-6 z-50 overflow-y-auto">
+        Loading...
+      </div>
+    );
   }
 
   let DetailViewComponent;

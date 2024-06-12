@@ -45,6 +45,7 @@ export default function TaskListCard({ taskList }: Props) {
       )}
       {selectedTaskId && (
         <TaskDetailView
+          key={selectedTaskId}
           taskId={selectedTaskId}
           onClose={() => setSelectedTaskId(null)}
         />

@@ -4,6 +4,8 @@ import TaskListCard from "./tasklist/TaskListCard";
 import AddTaskListButton from "./tasklist/AddTaskListButton";
 import EditableTitle from "./EditableTitle";
 import DashboardOptionsMenu from "./DashboardOptionsMenu";
+import ChatBot from "./chat/ChatBot";
+import ToggleChatButton from "./chat/ToggleChatButton";
 
 type Props = {
   dashboardId: string;
@@ -32,6 +34,7 @@ export default async function DashboardPane({ dashboardId }: Props) {
     <div>
       <div className="flex items-center justify-between mb-4">
         <EditableTitle dashboard={dashboard} />
+        <ToggleChatButton />
         <DashboardOptionsMenu dashboardId={dashboardIdNumber} />
       </div>
       {dashboard.taskLists.length === 0 ? (
@@ -42,6 +45,9 @@ export default async function DashboardPane({ dashboardId }: Props) {
         ))
       )}
       <AddTaskListButton dashboardId={dashboardIdNumber} />
+      <div id="chatBotContainer" style={{ display: "none" }}>
+        <ChatBot userId={dashboard.userId} isVisible={true} />
+      </div>
     </div>
   );
 }

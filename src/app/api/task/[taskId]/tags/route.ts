@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(req: NextRequest, { params }: { params: {
+  taskId: string;
+} }) {
   const taskId = parseInt(params.taskId, 10);
   const { tagName } = await req.json();
 
@@ -26,7 +28,9 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   return NextResponse.json(tag);
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: {
+  taskId: string;
+} }) {
   const taskId = parseInt(params.taskId, 10);
   const { tagName } = await req.json();
 
@@ -44,4 +48,20 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
   });
 
   return NextResponse.json({ message: "Tag removed" });
+}
+
+export async function GET(req: NextRequest, { params }: { params: {
+  taskId: string;
+} }) {
+  const taskId = parseInt(params.taskId, 10);
+  const task = await prisma.task.findUnique({
+    where: { id: taskId },
+    include: { tags: true },
+  });
+
+  if (!task) {
+    return NextResponse.error();
+  } else {
+    return NextResponse.json(task.tags);
+  }
 }

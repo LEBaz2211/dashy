@@ -15,3 +15,12 @@ export async function POST(req: NextRequest, { params }: { params: { taskId: str
 
   return NextResponse.json(subtask);
 }
+
+export async function GET(req: NextRequest, { params }: { params: { taskId: string } }) {
+  const taskId = parseInt(params.taskId, 10);
+  const subtasks = await prisma.subtask.findMany({
+    where: { taskId },
+  });
+
+  return NextResponse.json(subtasks);
+}

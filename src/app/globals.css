@@ -15,4 +15,19 @@ a {
   @apply max-w-4xl mx-auto p-4;
 }
 
+.message.user {
+  text-align: right;
+  color: blue;
+}
+
+.message.assistant {
+  text-align: left;
+  color: green;
+}
+
+/* Hide the system message */
+.message.system {
+  display: none;
+}
+
 
