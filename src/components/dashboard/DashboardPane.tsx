@@ -1,11 +1,5 @@
 import prisma from "@/lib/prisma";
-import { Dashboard } from "@prisma/client";
-import TaskListCard from "./tasklist/TaskListCard";
-import AddTaskListButton from "./tasklist/AddTaskListButton";
-import EditableTitle from "./EditableTitle";
-import DashboardOptionsMenu from "./DashboardOptionsMenu";
-import ChatBot from "./chat/ChatBot";
-import ToggleChatButton from "./chat/ToggleChatButton";
+import DashboardClientSide from "./DashboardClientSide";
 
 type Props = {
   dashboardId: string;
@@ -32,22 +26,7 @@ export default async function DashboardPane({ dashboardId }: Props) {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
-        <EditableTitle dashboard={dashboard} />
-        <ToggleChatButton />
-        <DashboardOptionsMenu dashboardId={dashboardIdNumber} />
-      </div>
-      {dashboard.taskLists.length === 0 ? (
-        <p className="text-gray-600 mb-4">No task lists available</p>
-      ) : (
-        dashboard.taskLists.map((taskList) => (
-          <TaskListCard key={taskList.id} taskList={taskList} />
-        ))
-      )}
-      <AddTaskListButton dashboardId={dashboardIdNumber} />
-      <div id="chatBotContainer" style={{ display: "none" }}>
-        <ChatBot userId={dashboard.userId} isVisible={true} />
-      </div>
+      <DashboardClientSide dashboard={dashboard} />
     </div>
   );
 }

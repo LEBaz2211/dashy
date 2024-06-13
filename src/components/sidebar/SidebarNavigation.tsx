@@ -1,9 +1,7 @@
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
-import DashboardList from "./DashboardList";
-import ConversationList from "./ConversationList";
-import UserMenu from "./UserMenu";
+import SidebarClientSide from "./SidebarClientSide";
 
 export default async function SidebarNavigation() {
   const session = await getServerSession(authOptions);
@@ -15,14 +13,5 @@ export default async function SidebarNavigation() {
       })
     : [];
 
-  return (
-    <nav className="bg-gray-100 shadow-md p-4 w-64 h-screen sticky top-0 flex flex-col justify-between">
-      <div>
-        <h1 className="text-2xl font-bold mb-4">Dashy</h1>
-        <DashboardList dashboards={dashboards} />
-        {/* <ConversationList /> */}
-      </div>
-      <UserMenu user={session?.user} />
-    </nav>
-  );
+  return <SidebarClientSide dashboards={dashboards} user={session?.user} />;
 }

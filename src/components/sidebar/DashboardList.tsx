@@ -32,6 +32,8 @@ export default function DashboardList({ dashboards }: Props) {
 
   return (
     <div>
+      {/* Add element to add vertical space */}
+      <div className="h-8" />
       <button
         type="button"
         onClick={handleAddDashboard}
